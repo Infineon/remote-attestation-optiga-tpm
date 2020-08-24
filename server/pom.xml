@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MIT License
+
+  Copyright (c) 2020 Infineon Technologies AG
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.ifx</groupId>
+    <artifactId>server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>server</name>
+    <description>TPM remote attestation PoC</description>
+
+    <properties>
+        <java.version>1.9</java.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- ////////////////////////
+            Tomcat
+        ///////////////////////// -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- monitoring service localhost:xxxx/actuator/... -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- //////////////////// -->
+
+        <!-- ////////////////////////
+            Spring Security
+        ///////////////////////// -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- //////////////////// -->
+
+        <!-- ////////////////////////
+             Webpage with thymeleaf instead of jsp
+         ///////////////////////// -->
+        <!-- resources/templates/*.html -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!-- //////////////////// -->
+
+        <!-- ////////////////////////
+            Lombok
+        ///////////////////////// -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- //////////////////// -->
+
+        <!-- ////////////////////////
+            In-memory database
+        ///////////////////////// -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.2.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <!-- //////////////////// -->
+
+        <!-- ////////////////////////
+                   WebSocket (Version > 5.2.2 has issue)
+        ///////////////////////// -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-messaging</artifactId>
+        </dependency>
+
+        <!-- ////////////////////////
+           TPM2.0 TSS
+           https://github.com/Microsoft/TSS.MSR/
+        ///////////////////////// -->
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>TSS.Java</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
+        <!-- ////////////////////////
+           webjars
+        ///////////////////////// -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>mdbootstrap</artifactId>
+            <version>4.19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>sockjs-client</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>stomp-websocket</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
+            </plugin>
+            <!-- ////////////////////////
+               minify js & css
+               trigger by mvn command only, not intellij
+            ///////////////////////// -->
+            <plugin>
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>minify-maven-plugin</artifactId>
+                <version>1.7.6</version>
+                <executions>
+                    <execution>
+                        <id>default-minify</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <charset>UTF-8</charset>
+                            <webappSourceDir>${basedir}/src/main/resources/static</webappSourceDir>
+                            <jsSourceDir>js</jsSourceDir>
+                            <jsSourceFiles>
+                                <jsSourceFile>util.js</jsSourceFile>
+                                <jsSourceFile>core-home.js</jsSourceFile>
+                                <jsSourceFile>core-entry.js</jsSourceFile>
+                                <jsSourceFile>core-dashboard.js</jsSourceFile>
+                            </jsSourceFiles>
+                            <cssSourceDir>css</cssSourceDir>
+                            <cssSourceFiles>
+                                <cssSourceFile>style-home.css</cssSourceFile>
+                                <cssSourceFile>style-entry.css</cssSourceFile>
+                                <cssSourceFile>style-dashboard.css</cssSourceFile>
+                            </cssSourceFiles>
+                            <webappTargetDir>${project.build.outputDirectory}/static</webappTargetDir>
+                            <!--<jsFinalFile>util.min.js</jsFinalFile>-->
+                            <jsEngine>CLOSURE</jsEngine>
+                            <skipMerge>true</skipMerge>
+                            <nosuffix>true</nosuffix>
+                            <verbose>true</verbose>
+                        </configuration>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

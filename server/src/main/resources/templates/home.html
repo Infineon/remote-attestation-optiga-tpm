@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<!--
+  MIT License
+
+  Copyright (c) 2020 Infineon Technologies AG
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE
+-->
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/webjars/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/webjars/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/static/css/style-home.css">
+    <!-- tab icon -->
+    <link rel="icon" href="/static/img/png/Infineon-Logo-Square.png" type="image/png">
+
+    <title>Remote Attestation</title>
+</head>
+
+<body>
+
+<!-- Start your project here-->
+
+<!------------->
+<!-- NAV BAR -->
+<!------------->
+<nav class="navbar navbar-expand-sm navbar-light grey lighten-5 sticky-top">
+
+    <!----------->
+    <!-- TITLE -->
+    <!----------->
+    <a class="navbar-brand" href="./">
+        <img src="/static/img/png/Infineon-Logo-Rectangle.png" height="30pem">
+    </a>
+
+    <!---------->
+    <!-- MENU -->
+    <!---------->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/entry">Start</a>
+            </li>
+            <div th:if="${username} != null">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+            </div>
+        </ul>
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+            <li class="nav-item">
+                <div th:if="${username} != null">
+                    <a class="nav-link" href="javascript:fSignOut();">
+                        <i class="fas fa-user"><span th:text="${username}"></span></i>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<br>
+
+<div style="text-align:center;">
+    <h1>Device Remote Attestation <small>with</small> Infineon TPM <!--<small>Trusted Platform Module</small>--></h1>
+</div>
+<br>
+
+<div class="container">
+    <div class="card-columns">
+        <div class="card mt-2 mb-3 mx-1">
+            <div class="text-center">
+                <img class="card-img-top" style="width:50%; height:50%; margin-top: 1rem" src="/static/img/png/home/tpm.png" alt="Image not found :'(">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Trusted Platform Module (TPM)</h5>
+                <p class="card-text">An international standard for a secure cryptoprocessor, a dedicated microcontroller designed to secure hardware through integrated cryptographic keys. <a href="https://en.wikipedia.org/wiki/Trusted_Platform_Module">Source</a></p>
+            </div>
+        </div>
+        <div class="card mt-2 mb-3 mx-1">
+            <div class="text-center">
+                <img class="card-img-top" style="width:50%; height:50%; margin-top: 1rem" src="/static/img/png/home/tcg.png" alt="Image not found :'(">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Trusted Computing</h5>
+                <p class="card-text">Trusted Computing (TC) is a technology developed and promoted by the Trusted Computing Group.
+                    The term is taken from the field of trusted systems and has a specialized meaning.
+                    With Trusted Computing, the computer will consistently behave in expected ways,
+                    and those behaviors will be enforced by computer hardware and software.
+                    <a href="https://en.wikipedia.org/wiki/Trusted_Computing">Source</a></p>
+            </div>
+        </div>
+        <div class="card mt-2 mb-3 mx-1">
+            <div class="text-center">
+                <img class="card-img-top" style="width:50%; height:50%; margin-top: 1rem" src="/static/img/png/home/trust.png" alt="Image not found :'(">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Remote Attestation</h5>
+                <p class="card-text">Remote attestation is a method by which a host (client) authenticates it’s hardware and software
+                    configuration to a remote host (server). The goal of remote attestation is to enable a remote
+                    system (challenger) to determine the level of trust in the <b>integrity of platform</b> of another system
+                    (attestator). <a href="https://seclab.stanford.edu/pcl/cs259/projects/cs259_final_lavina_jayesh/CS259_report_lavina_jayesh.pdf">Source</a></p>
+            </div>
+        </div>
+        <div class="card mt-2 mb-3 mx-1">
+            <div class="text-center">
+                <img class="card-img-top" style="width:30%; height:30%; margin-top: 1rem" src="/static/img/png/home/integrity.png" alt="Image not found :'(">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Platform Integrity</h5>
+                <p class="card-text">"Integrity" means "behave as intended", and a "platform" is any computer device regardless of its operating system.
+                    It is to ensure that the boot process starts from a trusted combination of hardware and software,
+                    and continues until the operating system has fully booted and applications are running.
+                    <a href="https://en.wikipedia.org/wiki/Trusted_Platform_Module">Source</a></p>
+            </div>
+        </div>
+        <div class="card mt-2 mb-3 mx-1">
+            <div class="text-center">
+                <img class="card-img-top" style="width:50%; height:50%; margin-top: 1rem" src="/static/img/png/home/linux.png" alt="Image not found :'(">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Linux Integrity Subsystem</h5>
+                <p class="card-text">The goals of the kernel integrity subsystem (E.g. Integrity Measurement Architecture, Extended Verification Module)
+                    are to detect if files have been accidentally or maliciously altered,
+                    both remotely and locally, appraise a file's measurement against a "good" value stored as an extended attribute,
+                    and enforce local file integrity. It is also a part of an overall Integrity Architecture based on the Trusted Computing Group's open standards.
+                    <a href="http://linux-ima.sourceforge.net/">Source</a></p>
+            </div>
+        </div>
+        <div class="card mt-2 mb-3 mx-1">
+            <div class="text-center">
+                <img class="card-img-top" style="width:50%; height:50%; margin-top: 1rem" src="/static/img/png/home/spring.png" alt="Image not found :'(">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Powered by Spring Framework</h5>
+                <p class="card-text">Remote attestation web server is powered by <a href="https://spring.io/">Spring Technologies</a> (e.g. Spring Boot, Spring Security, WebSocket, JPA)
+                    together with <a href="https://www.thymeleaf.org/">Thymeleaf XML/XHTML/HTML5 template engine</a>,
+                    <a href="https://mdbootstrap.com/">Material Design for Bootstrap</a>,
+                    <a href="https://www.h2database.com">H2 Database Engine</a>,
+                    and most importantly <a href="https://github.com/microsoft/TSS.MSR/tree/master/">Microsoft TPM Java Software Stack</a>.
+                    </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<br>
+
+<!-- Footer -->
+<footer class="page-footer font-small blue-grey lighten-5">
+
+    <div class="blue-grey lighten-4 dark-grey-text">
+        <div class="container">
+            <!-- Grid row-->
+            <div class="row py-4 d-flex align-items-center">
+
+                <!-- Grid column -->
+                <div class="col-md-6 col-lg-5 text-center text-md-left mb-4 mb-md-0">
+                    <h6 class="mb-0">Get connected with us on social networks!</h6>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-6 col-lg-7 text-center text-md-right">
+
+                    <!-- Facebook -->
+                    <a class="fb-ic" href="https://www.facebook.com/Infineon/">
+                        <i class="fab fa-facebook-f dark-grey-text mr-4"> </i>
+                    </a>
+                    <!-- Twitter -->
+                    <a class="tw-ic" href="https://twitter.com/Infineon/">
+                        <i class="fab fa-twitter dark-grey-text mr-4"> </i>
+                    </a>
+                    <!--Linkedin -->
+                    <a class="li-ic" href="https://sg.linkedin.com/company/infineon-technologies">
+                        <i class="fab fa-linkedin-in dark-grey-text mr-4"> </i>
+                    </a>
+
+                </div>
+                <!-- Grid column -->
+
+            </div>
+            <!-- Grid row-->
+        </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="container text-center text-md-left">
+
+        <!-- Grid row -->
+        <div class="row dark-grey-text">
+
+            <!-- Grid column -->
+            <div class="col-md-4 col-lg-3 mr-auto my-md-4 my-0 mt-4 mb-1">
+
+                <!-- Content -->
+                <h5 class="font-weight-bold text-uppercase mb-4">Disclaimer</h5>
+                <p>This is a Proof-of-Concept.</p>
+                <p>Any material downloaded or otherwise obtained through the uses of this website is done at your own discretion and risk and you are solely responsible for any damage may cause.</p>
+
+            </div>
+            <!-- Grid column -->
+
+            <hr class="clearfix w-100 d-md-none">
+
+            <!-- Grid column -->
+            <div class="col-md-2 col-lg-2 mx-auto my-md-4 my-0 mt-4 mb-1">
+
+                <!-- Links -->
+                <h5 class="font-weight-bold text-uppercase mb-4">About</h5>
+
+                <ul class="list-unstyled">
+                    <li>
+                        <p>
+                            <a class="dark-grey-text" href="https://www.infineon.com/">ABOUT US</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <a class="dark-grey-text" href="https://www.facebook.com/Infineon/">BLOG</a>
+                        </p>
+                    </li>
+                </ul>
+
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:<a href="https://www.infineon.com/"> Infineon.com</a></div>
+    <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+<!-- /Start your project here-->
+
+<!-- SCRIPTS -->
+<!-- jQuery -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/mdb.min.js"></script>
+<!-- My js -->
+<script type="text/javascript" src="/static/js/util.js"></script>
+<script type="text/javascript" src="/static/js/core-home.js"></script>
+</body>
+
+</html>
