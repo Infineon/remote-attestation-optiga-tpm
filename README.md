@@ -2,7 +2,7 @@
 
 Remote attestation is a mechanism to enable a remote system (server) to determine the health/integrity of a platform of another system. In a Linux-based system, a security feature known as the Integrity Measurement Architecture (IMA) can be used to capture platform measurements. Together with Infineon OPTIGA™ TPM (Trusted Platform Module), a hardware-based security and its set of attestation features, it can be used to perform authentication and to protect IMA measurements; consequently, raises the trust level of remote attestation.
 
-Please find the Application Note at [link](tobeupdated).
+For detailed setup and information, please find the Application Note at [link](tobeupdated).
 
 # Build
 
