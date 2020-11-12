@@ -393,9 +393,9 @@ public class TPMEngine {
         try {
             List<IMATemplate> tidy = new ArrayList<IMATemplate>();
             for (int i = 0; i < orderRef.size(); i++) {
-                String ref = orderRef.get(i).getFileName();
+                String ref = Hex.toHexString(orderRef.get(i).getHash());
                 IMATemplate found = toOrder.stream()
-                        .filter(template -> ref.equals(template.getFileName()))
+                        .filter(template -> ref.equals(Hex.toHexString(template.getHash())))
                         .findAny().orElse(null);
                 if (found != null)
                     tidy.add(found);
