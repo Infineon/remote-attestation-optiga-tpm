@@ -284,7 +284,7 @@ public class CoreService {
                     for (int i = 0; i < sorted_sha1Bank.length; i++) {
                         if (sorted_sha1Bank[i] == TPMEngine.PLATFORM_PCR) {
                             if (!sorted_pcrs[i].equalsIgnoreCase(computePcrSha1)) {
-                                return new Response<String>(Response.STATUS_ERROR, "SHA1 PCR-10 value mismatch with template re-computed value (maybe you did a restart instead of shutdown)");
+                                return new Response<String>(Response.STATUS_ERROR, "SHA1 PCR-10 value mismatch with template re-computed value (check if IMA configuration is done correctly)");
                             }
                         }
                     }
@@ -320,7 +320,7 @@ public class CoreService {
                     for (int i = 0; i < sorted_sha2Bank.length; i++) {
                         if (sorted_sha2Bank[i] == TPMEngine.PLATFORM_PCR) {
                             if (!sorted_pcrs[sha256_start_i + i].equalsIgnoreCase(computePcrSha256)) {
-                                return new Response<String>(Response.STATUS_ERROR, "SHA256 PCR-10 value mismatch with template re-computed value (maybe you did a restart instead of shutdown)");
+                                return new Response<String>(Response.STATUS_ERROR, "SHA256 PCR-10 value mismatch with template re-computed value (check if IMA configuration is done correctly)");
                             }
                         }
                     }
