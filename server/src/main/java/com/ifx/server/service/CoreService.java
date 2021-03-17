@@ -466,7 +466,11 @@ public class CoreService {
                 return new Response<String>(Response.STATUS_ERROR, "bad public key or pcr values format");
             }
             if (tpm.import_qualification(user.getQualification()) != true) {
-                return new Response<String>(Response.STATUS_ERROR, "bad qualification format");
+                return new Response<String>(Response.STATUS_ERROR, "invalid qualification, please perform Atelic to generate a new qualification");
+            } else {
+                // nullify the qualification to prevent replay attacks
+                user.setQualification(null);
+                userRepository.save(user);
             }
             if (tpm.import_quote_signature(attest.getQuote(), attest.getSignature()) != true) {
                 return new Response<String>(Response.STATUS_ERROR, "bad quote or signature format");
