@@ -433,24 +433,17 @@ public class CoreService {
             if (user == null || !passwordEncoder.matches(attest.getPassword(),user.getPassword())) {
                 return new Response<String>(Response.STATUS_ERROR, "invalid username or password");
             }
+
+            List<IMATemplate> imaTemplateRef = TPMEngine.parseLinuxMeasurements(user.getMeasureTemplate(), 10);
+            List<IMATemplate> imaTemplateTarget = TPMEngine.parseLinuxMeasurements(attest.getImaTemplate(), 10);
+
             int[] sha1Bank = fromStr2IntArray(user.getSha1Bank());
             int[] sha256Bank = fromStr2IntArray(user.getSha256Bank());
             String[] pcrs = fromStr2StrArray(user.getPcrs());
-
-            /**
-             *  PCR10 is computed using the IMA template.
-             *  Here we take the attest.template as ordering reference.
-             *  Now arrange the order of attune.template to match with the reference
-             *  Compute the SHA1 & SHA256 digest of the re-ordered template
-             *  Use the computed digests as good reference and check it against the quote
-             */
-            List<IMATemplate> toOrder = TPMEngine.parseLinuxMeasurements(user.getMeasureTemplate(), 10);
-            List<IMATemplate> orderRef = TPMEngine.parseLinuxMeasurements(attest.getImaTemplate(), 10);
-            List<IMATemplate> ordered = orderIMATemplate(toOrder, orderRef);
-            String measureList = TPMEngine.printIMATemplate(orderRef);
+            String measureList = TPMEngine.printIMATemplate(imaTemplateTarget);
 
             if (sha1Bank != null) {
-                String computedPcrSha1 = Hex.toHexString(TPMEngine.computePcrSha1(ordered));
+                String computedPcrSha1 = Hex.toHexString(TPMEngine.computePcrSha1(imaTemplateTarget));
                 for (int i = 0; i < sha1Bank.length; i++) {
                     if (sha1Bank[i] == TPMEngine.PLATFORM_PCR) {
                         pcrs[i] = computedPcrSha1;
@@ -459,7 +452,7 @@ public class CoreService {
             }
 
             if (sha256Bank != null) {
-                String computedPcrSha256 = Hex.toHexString(TPMEngine.computePcrSha256(ordered));
+                String computedPcrSha256 = Hex.toHexString(TPMEngine.computePcrSha256(imaTemplateTarget));
                 for (int i = 0; i < sha256Bank.length; i++) {
                     if (sha256Bank[i] == TPMEngine.PLATFORM_PCR) {
                         pcrs[sha1Bank.length + i] = computedPcrSha256;
@@ -501,13 +494,14 @@ public class CoreService {
             }
 
             /**
-             * Execute attestation, check quote and signature
+             * Validate entries of ima template, quote, and signature
              *
              * Send response to active clients via websocket
              * &
              * Respond to REST service
              */
-            if (tpm.attest() != true) {
+            if (TPMEngine.validateIMATemplate(imaTemplateRef, imaTemplateTarget) != true
+                    || tpm.validateQuote() != true) {
                 try {
                     resp.setOutcome("Error in signature, platform measurement, or qualification data");
                     simpMessagingTemplate.convertAndSendToUser(attest.getUsername(), "/topic/private-test",

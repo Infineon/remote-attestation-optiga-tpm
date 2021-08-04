@@ -34,7 +34,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import static tss.Crypto.hash;
 
 public class TPMEngine {
@@ -146,7 +149,7 @@ public class TPMEngine {
         }
     }
 
-    public boolean attest() {
+    public boolean validateQuote() {
         try {
             /**
              * Attestation
@@ -308,6 +311,33 @@ public class TPMEngine {
             return imaTemplates;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * Return true if the refs-set is the subset of targets-set,
+     * ; otherwise, return false
+     *
+     * Only the hash value is compared.
+     *
+     * @param refs a list of expected measurement
+     * @param targets a list of measurement to be validated
+     * @return
+     */
+    public static boolean validateIMATemplate(List<IMATemplate> refs, List<IMATemplate> targets) {
+        try {
+
+            for (IMATemplate ref: refs) {
+                Optional<IMATemplate> found = targets.stream().
+                        filter(p -> Arrays.equals(ref.getHash(), p.getHash())).
+                        findFirst();
+                if (!found.isPresent())
+                    return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
