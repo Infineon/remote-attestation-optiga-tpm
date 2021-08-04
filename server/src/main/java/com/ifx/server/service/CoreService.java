@@ -447,17 +447,23 @@ public class CoreService {
             List<IMATemplate> toOrder = TPMEngine.parseLinuxMeasurements(user.getMeasureTemplate(), 10);
             List<IMATemplate> orderRef = TPMEngine.parseLinuxMeasurements(attest.getImaTemplate(), 10);
             List<IMATemplate> ordered = orderIMATemplate(toOrder, orderRef);
-            String computedPcrSha1 = Hex.toHexString(TPMEngine.computePcrSha1(ordered));
-            String computedPcrSha256 = Hex.toHexString(TPMEngine.computePcrSha256(ordered));
             String measureList = TPMEngine.printIMATemplate(orderRef);
-            for (int i = 0; i < sha1Bank.length; i++) {
-                if (sha1Bank[i] == TPMEngine.PLATFORM_PCR) {
-                    pcrs[i] = computedPcrSha1;
+
+            if (sha1Bank != null) {
+                String computedPcrSha1 = Hex.toHexString(TPMEngine.computePcrSha1(ordered));
+                for (int i = 0; i < sha1Bank.length; i++) {
+                    if (sha1Bank[i] == TPMEngine.PLATFORM_PCR) {
+                        pcrs[i] = computedPcrSha1;
+                    }
                 }
             }
-            for (int i = 0; i < sha256Bank.length; i++) {
-                if (sha256Bank[i] == TPMEngine.PLATFORM_PCR) {
-                    pcrs[sha1Bank.length + i] = computedPcrSha256;
+
+            if (sha256Bank != null) {
+                String computedPcrSha256 = Hex.toHexString(TPMEngine.computePcrSha256(ordered));
+                for (int i = 0; i < sha256Bank.length; i++) {
+                    if (sha256Bank[i] == TPMEngine.PLATFORM_PCR) {
+                        pcrs[sha1Bank.length + i] = computedPcrSha256;
+                    }
                 }
             }
 
