@@ -34,4 +34,5 @@ public class Atelic {
 
     private String username;
     private String password;
+    private String akPub;
 }

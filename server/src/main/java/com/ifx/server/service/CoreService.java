@@ -395,6 +395,15 @@ public class CoreService {
             }
             String qualification = TPMEngine.getQualification();
             user.setQualification(qualification);
+
+            // Update the attestation key if there is a change
+            // Using makeCredential to assure that the attestation key came
+            // from a TPM associated with the known EK
+            if (atelic.getAkPub() != null && atelic.getAkPub() != "") {
+                user.setAkPub(atelic.getAkPub());
+                user.setAkName(TPMEngine.computePubKeyName(atelic.getAkPub()));
+            }
+
             userRepository.save(user);
 
             AtelicResp atelicResp = new AtelicResp(qualification, null);
