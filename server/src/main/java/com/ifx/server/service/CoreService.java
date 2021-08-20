@@ -211,7 +211,12 @@ public class CoreService {
                 return new Response<String>(Response.STATUS_ERROR, "invalid username or password");
             }
             user.setAkPub(attune.getAkPub());
+            if (!TPMEngine.assert_attributes(attune.getAkPub())) {
+                return new Response<String>(Response.STATUS_ERROR, "Wrong attributes of the \"Attestation Key\"");
+            }
             user.setAkName(TPMEngine.computePubKeyName(attune.getAkPub()));
+
+
             user.setEkCrt(attune.getEkCrt());
             user.setEkCrtAttest("Failed");
 

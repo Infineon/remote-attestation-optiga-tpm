@@ -436,6 +436,32 @@ public class TPMEngine {
         }
 
     }
+    /**
+     * Assert the correct attributes of the Attestation Key (AK)
+     * TPM2 tool repository generate AK with the next attributes:
+     * @attributes fixedTPM , fixedParent , sensitiveDataOrigin , userWithAuth , encrypt 
+     * @param pubKey
+     * @return
+     */
+    public static boolean assert_attributes(String pubKey) {
+        byte[] bArray = hexStringToByteArray(pubKey);
+        InByteBuf inBuf = new InByteBuf(bArray);
+        inBuf.readInt(2); // skip length of payload
+        TPMT_PUBLIC pk = new TPMT_PUBLIC();
+        pk.initFromTpm(inBuf);
+        if(pk.objectAttributes.hasAttr(TPMA_OBJECT.fixedTPM)) {
+            if(pk.objectAttributes.hasAttr(TPMA_OBJECT.sensitiveDataOrigin)) {
+                if(pk.objectAttributes.hasAttr(TPMA_OBJECT.userWithAuth)) {
+                    if(pk.objectAttributes.hasAttr(TPMA_OBJECT.restricted)) {
+                        if(pk.objectAttributes.hasAttr(TPMA_OBJECT.encrypt)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Calculate TPM key's Name according to TPM standard
