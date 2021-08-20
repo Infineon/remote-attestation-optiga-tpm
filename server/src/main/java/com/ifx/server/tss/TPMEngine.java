@@ -436,6 +436,7 @@ public class TPMEngine {
         }
 
     }
+
     /**
      * Assert the correct attributes of the Attestation Key (AK)
      * TPM2 tool repository generate AK with the next attributes:

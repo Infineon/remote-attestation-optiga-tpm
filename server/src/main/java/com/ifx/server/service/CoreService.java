@@ -210,13 +210,12 @@ public class CoreService {
             if (user == null || !passwordEncoder.matches(attune.getPassword(),user.getPassword())) {
                 return new Response<String>(Response.STATUS_ERROR, "invalid username or password");
             }
-            user.setAkPub(attune.getAkPub());
             if (!TPMEngine.assert_attributes(attune.getAkPub())) {
                 return new Response<String>(Response.STATUS_ERROR, "Wrong attributes of the \"Attestation Key\"");
             }
+
+            user.setAkPub(attune.getAkPub());
             user.setAkName(TPMEngine.computePubKeyName(attune.getAkPub()));
-
-
             user.setEkCrt(attune.getEkCrt());
             user.setEkCrtAttest("Failed");
 
@@ -405,6 +404,9 @@ public class CoreService {
             // Using makeCredential to assure that the attestation key came
             // from a TPM associated with the known EK
             if (atelic.getAkPub() != null && atelic.getAkPub() != "") {
+                if (!TPMEngine.assert_attributes(atelic.getAkPub())) {
+                    return new Response<AtelicResp>(Response.STATUS_ERROR, "Wrong attributes of the \"Attestation Key\"", null);
+                }
                 user.setAkPub(atelic.getAkPub());
                 user.setAkName(TPMEngine.computePubKeyName(atelic.getAkPub()));
             }
