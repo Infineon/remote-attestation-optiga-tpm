@@ -8,10 +8,6 @@ Hardware prerequisites:
 - [IRIDIUM9670 TPM2.0](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)\
   <img src="https://github.com/Infineon/remote-attestation-optiga-tpm/raw/master/media/IRIDIUM9670-TPM2.png" width="30%">
 
-# Repository Directions
-- Server repo, please switch to [server](https://github.com/Infineon/remote-attestation-optiga-tpm/tree/server) branch.
-- Device repo, please switch to [device](https://github.com/Infineon/remote-attestation-optiga-tpm/tree/device) branch.
-
 # Getting Started
 
 In this repository, you will find attestation server and device (Raspberry Pi 3/4) reference implementations. For detailed setup and information, please find the Application Note at [link](https://github.com/Infineon/remote-attestation-optiga-tpm/raw/master/documents/tpm-appnote-ra.pdf).
