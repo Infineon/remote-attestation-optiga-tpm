@@ -465,6 +465,8 @@ public class CoreService {
                         pcrs[i] = computedPcrSha1;
                     }
                 }
+            } else {
+                sha1Bank = new int[0];
             }
 
             if (sha256Bank != null) {
