@@ -84,23 +84,6 @@ public class CoreService {
     public CoreService() {
     }
 
-    static public String printCertificate(X509Certificate c) {
-        String out = "";
-        try {
-            out += "Version: V" + Integer.toString(c.getVersion()) + ", ";
-            out += "Format: " + c.getType() + "\n";
-            out += "Subject: " + c.getSubjectDN().toString() + "\n";
-            out += "Issuer: "+ c.getIssuerDN().toString() + "\n";
-            out += "Validity: [From: " + c.getNotBefore().toString() +
-                    ", To: " + c.getNotAfter().toString() + "]\n";
-            out += "Signature Algorithm: "+ c.getSigAlgName() + "\n";
-            out += "Public Key: "+ c.getPublicKey().toString() + "\n";
-            out += "Signature: "+ Hex.toHexString(c.getSignature()) + "\n";
-        } catch (Exception e) {
-        }
-        return out;
-    }
-
     private String viewAddModelAttributeUsername(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken == false) {
@@ -134,8 +117,8 @@ public class CoreService {
         model.addAttribute("atelic", atelic);
 
         CaCerts ca = new CaCerts();
-        ca.setRootCAText(caManager.getCA().getRootCAText());
-        ca.setRootCAAttest(caManager.getCA().getRootCAAttest());
+        ca.setRootCAText(caManager.getDisplayCA().getRootCAText());
+        ca.setRootCAAttest(caManager.getDisplayCA().getRootCAAttest());
         model.addAttribute("caCerts", ca);
 
         return "dashboard";
@@ -235,7 +218,7 @@ public class CoreService {
                 ByteArrayInputStream bytes = new ByteArrayInputStream(crt_der);
                 X509Certificate eKCert = (X509Certificate)certFactory.generateCertificate(bytes);
                 RSAPublicKey key = (RSAPublicKey)eKCert.getPublicKey();
-                user.setEkCrt(printCertificate(eKCert));
+                user.setEkCrt(CertificationAuthority.printCert(eKCert));
                 user.setEkPub(Hex.toHexString(key.getModulus().toByteArray()));
 
                 caManager.verify(eKCert);
@@ -259,7 +242,7 @@ public class CoreService {
                 user.setPcrs(null);
             }
 
-            if (attune.getSha1Bank() != null && attune.getSha1Bank().length != 0) {
+            if (attune.getSha1Bank() != null && attune.getSha1Bank().length > 0) {
                 final int[] sha1Bank = attune.getSha1Bank();
 
                 if (toSort) {
@@ -295,7 +278,7 @@ public class CoreService {
                 }
             } else
                 user.setSha1Bank(null);
-            if (attune.getSha256Bank() != null && attune.getSha256Bank().length != 0) {
+            if (attune.getSha256Bank() != null && attune.getSha256Bank().length > 0) {
                 int[] sha2Bank = attune.getSha256Bank();
                 int sha256_start_i = sorted_pcrs_i;
 
@@ -465,6 +448,8 @@ public class CoreService {
                         pcrs[i] = computedPcrSha1;
                     }
                 }
+            } else {
+                sha1Bank = new int[0];
             }
 
             if (sha256Bank != null) {
@@ -474,6 +459,8 @@ public class CoreService {
                         pcrs[sha1Bank.length + i] = computedPcrSha256;
                     }
                 }
+            } else {
+                sha256Bank = new int[0];
             }
 
             TPMEngine tpm = new TPMEngine();
