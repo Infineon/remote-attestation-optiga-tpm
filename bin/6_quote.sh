@@ -1,6 +1,6 @@
 #!/bin/sh -x
 echo "Remember to update pcr according to config.cfg"
-pcrs="sha1:10+sha256:10"
+pcrs="sha256:10"
 qualification=`xxd -p -c 9999 qualification`
 
 cp /sys/kernel/security/ima/binary_runtime_measurements ./binary_runtime_measurements
