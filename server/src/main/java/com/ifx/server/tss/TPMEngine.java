@@ -101,16 +101,16 @@ public class TPMEngine {
              */
             this.pcrs = new PCR_ReadResponse();
             this.pcrs.pcrUpdateCounter = 0;
-            if (sha1Bank != null && sha256Bank != null) {
+            if (sha1Bank.length > 0 && sha256Bank.length > 0) {
                 this.pcrs.pcrSelectionOut = new TPMS_PCR_SELECTION[]{
                         new TPMS_PCR_SELECTION(TPM_ALG_ID.SHA1, sha1Bank),
                         new TPMS_PCR_SELECTION(TPM_ALG_ID.SHA256, sha256Bank)
                 };
-            } else if (sha1Bank != null) {
+            } else if (sha1Bank.length > 0) {
                 this.pcrs.pcrSelectionOut = new TPMS_PCR_SELECTION[]{
                         new TPMS_PCR_SELECTION(TPM_ALG_ID.SHA1, sha1Bank),
                 };
-            } else if (sha256Bank != null) {
+            } else if (sha256Bank.length > 0) {
                 this.pcrs.pcrSelectionOut = new TPMS_PCR_SELECTION[]{
                         new TPMS_PCR_SELECTION(TPM_ALG_ID.SHA256, sha256Bank)
                 };

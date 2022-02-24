@@ -259,7 +259,7 @@ public class CoreService {
                 user.setPcrs(null);
             }
 
-            if (attune.getSha1Bank() != null && attune.getSha1Bank().length != 0) {
+            if (attune.getSha1Bank() != null && attune.getSha1Bank().length > 0) {
                 final int[] sha1Bank = attune.getSha1Bank();
 
                 if (toSort) {
@@ -295,7 +295,7 @@ public class CoreService {
                 }
             } else
                 user.setSha1Bank(null);
-            if (attune.getSha256Bank() != null && attune.getSha256Bank().length != 0) {
+            if (attune.getSha256Bank() != null && attune.getSha256Bank().length > 0) {
                 int[] sha2Bank = attune.getSha256Bank();
                 int sha256_start_i = sorted_pcrs_i;
 
@@ -476,6 +476,8 @@ public class CoreService {
                         pcrs[sha1Bank.length + i] = computedPcrSha256;
                     }
                 }
+            } else {
+                sha256Bank = new int[0];
             }
 
             TPMEngine tpm = new TPMEngine();
