@@ -134,8 +134,8 @@ public class CoreService {
         model.addAttribute("atelic", atelic);
 
         CaCerts ca = new CaCerts();
-        ca.setRootCAText(caManager.getCA().getRootCAText());
-        ca.setRootCAAttest(caManager.getCA().getRootCAAttest());
+        ca.setRootCAText(caManager.getDisplayCA().getRootCAText());
+        ca.setRootCAAttest(caManager.getDisplayCA().getRootCAAttest());
         model.addAttribute("caCerts", ca);
 
         return "dashboard";
