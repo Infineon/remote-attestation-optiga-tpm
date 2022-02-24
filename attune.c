@@ -28,6 +28,10 @@
 #include <string.h>
 #include <libconfig.h>
 
+#define PCR_BIN_SHA1_SHA2_SIZE 1248 // SHA1 bank (20B x 24) + SHA256 bank (32B x 24) = 1248
+#define PCR_BIN_SHA1_SIZE 480 // SHA1 bank (20B x 24) = 480
+#define PCR_BIN_SHA2_SIZE 768 // SHA256 bank (32B x 24) = 768
+
 static char *fMalloc(FILE *fd, size_t *sz) {
   fseek(fd, 0, SEEK_END);
   *sz = ftell(fd);
@@ -102,6 +106,7 @@ int main(void)
   const config_setting_t *c2 = NULL;
   size_t pcrs_sha1 = 0;
   size_t pcrs_sha2 = 0;
+  size_t pcrs_bin_sz = 0;
   
   // To be freed on exit
   CURL *curl = NULL;
@@ -240,10 +245,13 @@ int main(void)
       pcrs = fMalloc(fd, &sz);
       fread(pcrs, sizeof(char), sz, fd);
       fclose(fd);
-      if (sz != 1248) { // SHA1 bank (20B x 24) + SHA256 bank (32B x 24) = 1248
+      if (sz != PCR_BIN_SHA1_SHA2_SIZE &&
+          sz != PCR_BIN_SHA1_SIZE &&
+          sz != PCR_BIN_SHA2_SIZE ) {
         printf("Invalid PCRs file format\n");
         goto exit;
       }
+      pcrs_bin_sz = sz;
       printf("PCRs size: %d\n",sz);
     } else {
       printf("PCRs file not found\n");
@@ -305,9 +313,9 @@ int main(void)
         intArray = json_object_new_array();
         for (; i < pcrs_sha2; i++) {
           int index = config_setting_get_int_elem(c2, i);
-          int offset = (24*20)+(index*32);
+          int offset = ((pcrs_bin_sz>PCR_BIN_SHA2_SIZE)?PCR_BIN_SHA1_SIZE:0) + (index*32);
           char *hexStr = NULL; // 64 chars + endline
-        
+
           hexStr = fByteAry2HexStr((char *)(pcrs + offset), 32);
           json_object_array_add(strArray, json_object_new_string(hexStr));
           free(hexStr);
