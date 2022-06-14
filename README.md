@@ -5,8 +5,11 @@ Remote attestation is a mechanism to enable a remote system (server) to determin
 
 Hardware prerequisites:
 - [Raspberry Pi® 4](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/) or [Raspberry Pi® 3](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
-- [IRIDIUM9670 TPM2.0](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)\
-  <img src="https://github.com/Infineon/remote-attestation-optiga-tpm/raw/master/media/IRIDIUM9670-TPM2.png" width="30%">
+- Use either of the following TPM2.0 boards:
+  - [IRIDIUM9670 TPM2.0](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)\
+    <img src="https://github.com/Infineon/remote-attestation-optiga-tpm/raw/master/media/IRIDIUM9670-TPM2.png" width="30%">
+  - [OPTIGA™ TPM SLB 9672 RPI evaluation board](https://www.infineon.com/cms/en/product/evaluation-boards/optiga-tpm-9672-rpi-eval/)\
+    <img src="https://github.com/Infineon/remote-attestation-optiga-tpm/raw/master/media/SLB9672-EVA-BOARD.png" width="40%">
 
 # Getting Started
 
