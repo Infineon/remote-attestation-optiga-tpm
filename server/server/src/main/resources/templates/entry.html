@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--
+  MIT License
+
+  Copyright (c) 2020 Infineon Technologies AG
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE
+-->
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/webjars/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/webjars/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/static/css/style-entry.css">
+    <!-- tab icon -->
+    <link rel="icon" href="/static/img/png/Infineon-Logo-Square.png" type="image/png">
+
+    <title>Remote Attestation</title>
+</head>
+
+<body>
+
+<!-- Start your project here-->
+
+<!------------->
+<!-- NAV BAR -->
+<!------------->
+<nav class="navbar navbar-expand-sm navbar-light grey lighten-5 sticky-top">
+
+    <!----------->
+    <!-- TITLE -->
+    <!----------->
+    <a class="navbar-brand" href="./">
+        <img src="/static/img/png/Infineon-Logo-Rectangle.png" height="30pem">
+    </a>
+
+    <!---------->
+    <!-- MENU -->
+    <!---------->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/entry">Start<span class="sr-only">(current)</span></a>
+            </li>
+            <div th:if="${username} != null">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+            </div>
+        </ul>
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+            <li class="nav-item">
+                <div th:if="${username} != null">
+                    <a class="nav-link" href="javascript:fSignOut();">
+                        <i class="fas fa-user"><span th:text="${username}"></span></i>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<br>
+
+<div class="container">
+    <!-- Default form login -->
+    <form id="idFormSignIn" class="text-center border border-light p-5" autocomplete="on" action="" method="post" onsubmit="fSignIn(); return false;">
+
+        <p class="h4 mb-4">Sign in</p>
+
+        <!-- Username -->
+        <input type="text" id="defaultLoginFormUsername" class="form-control mb-4" placeholder="Username" name="username" required>
+
+        <!-- Password -->
+        <input type="password" id="defaultLoginFormPassword" autocomplete="on" class="form-control mb-4" placeholder="Password" name="password" required>
+
+        <div class="d-flex justify-content-around">
+            <div>
+                <!-- Remember me -->
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
+                    <label class="custom-control-label" for="defaultLoginFormRemember">Remember me</label>
+                </div>
+            </div>
+            <div>
+                <!-- Forgot password -->
+                <a href="javascript:void(0);" onclick="fShowAlertForgotPassword();">Forgot password?</a>
+            </div>
+        </div>
+
+        <!-- Warning -->
+        <div id="alertSignIn"></div>
+
+        <!-- Sign in button -->
+        <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+
+        <!-- Register -->
+        <p>Not a member?
+            <a href="#idFormSignUp">Register</a>
+        </p>
+
+    </form>
+    <!-- Default form login -->
+
+    <br>
+
+    <!-- Default form register -->
+    <form id="idFormSignUp" class="text-center border border-light p-5" autocomplete="on" action="" method="post" onsubmit="fSignUp(); return false;">
+
+        <p class="h4 mb-4">Sign up</p>
+
+        <!-- Username -->
+        <input type="text" id="defaultRegisterFormUsername" class="form-control mb-4" placeholder="Username" name="username" required>
+
+        <!-- Password -->
+        <input type="password" id="defaultRegisterFormPassword" autocomplete="on" class="form-control" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock" name="password" required>
+        <br>
+        <input type="password" id="defaultRegisterFormPassword2" autocomplete="on" class="form-control" placeholder="Repeat password" aria-describedby="defaultRegisterFormPasswordHelpBlock" name="passwordConfirm" required>
+        <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+            At least 1 character or 1 digit
+        </small>
+
+        <!-- Warning -->
+        <div id="alertSignUp"></div>
+
+        <!-- Sign up button -->
+        <button class="btn btn-info my-4 btn-block" type="submit">Sign up</button>
+
+        <hr>
+
+        <!-- Terms of service -->
+        <p>
+            By clicking <em>Sign up</em> you agree to our
+            <a href="javascript:void(0);" onclick="fShowAlertTermsOfService();">terms of service</a>
+        </p>
+        <!-- Warning -->
+        <div id="alertTermsOfService"></div>
+
+    </form>
+    <!-- Default form register -->
+</div>
+
+<br>
+
+<!-- Footer -->
+<footer class="page-footer font-small blue-grey lighten-5">
+
+    <div class="blue-grey lighten-4 dark-grey-text">
+        <div class="container">
+            <!-- Grid row-->
+            <div class="row py-4 d-flex align-items-center">
+
+                <!-- Grid column -->
+                <div class="col-md-6 col-lg-5 text-center text-md-left mb-4 mb-md-0">
+                    <h6 class="mb-0">Get connected with us on social networks!</h6>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-6 col-lg-7 text-center text-md-right">
+
+                    <!-- Facebook -->
+                    <a class="fb-ic" href="https://www.facebook.com/Infineon/">
+                        <i class="fab fa-facebook-f dark-grey-text mr-4"> </i>
+                    </a>
+                    <!-- Twitter -->
+                    <a class="tw-ic" href="https://twitter.com/Infineon/">
+                        <i class="fab fa-twitter dark-grey-text mr-4"> </i>
+                    </a>
+                    <!--Linkedin -->
+                    <a class="li-ic" href="https://sg.linkedin.com/company/infineon-technologies">
+                        <i class="fab fa-linkedin-in dark-grey-text mr-4"> </i>
+                    </a>
+
+                </div>
+                <!-- Grid column -->
+
+            </div>
+            <!-- Grid row-->
+        </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="container text-center text-md-left">
+
+        <!-- Grid row -->
+        <div class="row dark-grey-text">
+
+            <!-- Grid column -->
+            <div class="col-md-4 col-lg-3 mr-auto my-md-4 my-0 mt-4 mb-1">
+
+                <!-- Content -->
+                <h5 id="idDisclaimer" class="font-weight-bold text-uppercase mb-4">Disclaimer</h5>
+                <p>This is a Proof-of-Concept.</p>
+                <p>Any material downloaded or otherwise obtained through the uses of this website is done at your own discretion and risk and you are solely responsible for any damage may cause.</p>
+
+            </div>
+            <!-- Grid column -->
+
+            <hr class="clearfix w-100 d-md-none">
+
+            <!-- Grid column -->
+            <div class="col-md-2 col-lg-2 mx-auto my-md-4 my-0 mt-4 mb-1">
+
+                <!-- Links -->
+                <h5 class="font-weight-bold text-uppercase mb-4">About</h5>
+
+                <ul class="list-unstyled">
+                    <li>
+                        <p>
+                            <a class="dark-grey-text" href="https://www.infineon.com/">ABOUT US</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <a class="dark-grey-text" href="https://www.facebook.com/Infineon/">BLOG</a>
+                        </p>
+                    </li>
+                </ul>
+
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:<a href="https://www.infineon.com/"> Infineon.com</a>(<small th:text="${userCount}"></small>)</div>
+    <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+<!-- /Start your project here-->
+
+<!-- SCRIPTS -->
+<!-- jQuery -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/mdb.min.js"></script>
+<!-- My js -->
+<script th:inline="javascript">
+    var userForm = /*[[${userForm}]]*/ null;
+</script>
+<script type="text/javascript" src="/static/js/util.js"></script>
+<script type="text/javascript" src="/static/js/core-entry.js"></script>
+</body>
+
+</html>
