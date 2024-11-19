@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<!--
+  MIT License
+
+  Copyright (c) 2020 Infineon Technologies AG
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE
+-->
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/webjars/mdbootstrap/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="/webjars/mdbootstrap/css/mdb.min.css">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="/static/css/style-dashboard.css">
+    <!-- tab icon -->
+    <link rel="icon" href="/static/img/png/Infineon-Logo-Square.png" type="image/png">
+
+    <title>Remote Attestation</title>
+</head>
+
+<body>
+
+<!-- Start your project here-->
+
+<!------------->
+<!-- NAV BAR -->
+<!------------->
+<nav class="navbar navbar-expand-sm navbar-light grey lighten-5 sticky-top">
+
+    <!----------->
+    <!-- TITLE -->
+    <!----------->
+    <a class="navbar-brand" href="./">
+        <img src="/static/img/png/Infineon-Logo-Rectangle.png" height="30pem">
+    </a>
+
+    <!---------->
+    <!-- MENU -->
+    <!---------->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/entry">Start</a>
+            </li>
+            <div th:if="${username} != null">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/dashboard">Dashboard<span class="sr-only">(current)</span></a>
+                </li>
+            </div>
+        </ul>
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+            <li class="nav-item">
+                <div th:if="${username} != null">
+                    <a class="nav-link" href="javascript:fSignOut();">
+                        <i class="fas fa-user"><span th:text="${username}"></span></i>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<br>
+
+<div style="text-align:center;">
+    <h1>Device Remote Attestation <small>with</small> Infineon TPM</h1>
+</div>
+<br>
+
+<div class="container-fluid">
+    <!-- Card -->
+    <div class="card card-cascade narrower">
+        <!-- Section: Card -->
+        <section>
+            <h3 class="card-header card-h1 light-blue lighten-1 white-text text-uppercase font-weight-bold text-center py-3">Certificate Authority</h3>
+            <!-- Card content -->
+            <div class="card-body card-body-cascade pb-0">
+                <!-- Panel data -->
+                <div class="row card-body pt-3">
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Root CA Certificate
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="ca-root-cert" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Root CA verification <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
+                                                    title="Self-signed certificate"></i>
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="ca-root-attest" rows="1" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel data -->
+            </div>
+            <!-- Card content -->
+        </section>
+        <!-- Section: Card -->
+    </div>
+    <!-- Card -->
+
+    <!-- Card -->
+    <div class="card card-cascade narrower mt-5">
+        <!-- Section: Card -->
+        <section>
+            <h3 class="card-header card-h1 light-blue lighten-1 white-text text-uppercase font-weight-bold text-center py-3">Device</h3>
+             <!-- Card content -->
+            <div class="card-body card-body-cascade pb-0">
+                <!-- Panel data -->
+                <div class="row card-body pt-3">
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            EK Certificate
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-ek-cert" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            EK verification <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
+                                               title="Infineon CA signed certificate"></i>
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-ek-attest" rows="1" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            AK Name
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-ak-name" rows="1" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            AK Public Key (RSA 2048)
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-ak-pk" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel data -->
+            </div>
+            <!-- Card content -->
+        </section>
+        <!-- Section: Card -->
+    </div>
+    <!-- Card -->
+
+    <!-- Card -->
+    <div class="card card-cascade narrower mt-5">
+        <!-- Section: Card -->
+        <section>
+            <h3 class="card-header card-h1 light-blue lighten-1 white-text text-uppercase font-weight-bold text-center py-3">Expected Platform Measurements</h3>
+            <!-- Card content -->
+            <div class="card-body card-body-cascade pb-0">
+                <!-- Panel data -->
+                <div class="row card-body pt-3">
+                    <div class="col-md-6">
+                            <p class="mb-2 h6" style="text-align: left">
+                                SHA-1 PCR Bank Register 0~23 Selection
+                            </p>
+                            <div class="form-group">
+                                <textarea class="form-control rounded-0" id="attune-sha1-pcrlist" rows="1" readonly></textarea>
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2 h6" style="text-align: left">
+                            SHA-256 PCR Bank Register 0~23 Selection
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-sha2-pcrlist" rows="1" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Qualification Data
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="atelic-qualification" rows="1" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            PCR Values (SHA1/SHA256 PCR bank)
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-pcrs-value" rows="2" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Runtime Measurement List
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attune-measure-list" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel data -->
+            </div>
+            <!-- Card content -->
+        </section>
+        <!-- Section: Card -->
+    </div>
+    <!-- Card -->
+
+    <!-- Card -->
+    <div class="card card-cascade narrower mt-5">
+        <!-- Section: Card -->
+        <section>
+            <h3 class="card-header card-h1 light-blue lighten-1 white-text text-uppercase font-weight-bold text-center py-3">Device Attestation</h3>
+            <!-- Card content -->
+            <div class="card-body card-body-cascade pb-0">
+                <!-- Panel data -->
+                <div class="row card-body pt-3">
+                    <div class="col-md-6">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Attestation Requested Time <i class="far fa-clock pl-1"></i>
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attest-time" rows="1" style="resize:none" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Result
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attest-outcome" rows="1" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <!-- Card inside Card -->
+                        <div class="card card-cascade narrower">
+                            <!-- Section: Card -->
+                            <section>
+                                <h3 class="card-header card-h2 light-blue lighten-1 white-text text-uppercase font-weight-bold text-center py-3">Compute</h3>
+                                <!-- Card content -->
+                                <div class="card-body card-body-cascade pb-0">
+                                    <!-- Panel data -->
+                                    <div class="row card-body pt-3">
+                                        <div class="col-md-12">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                Runtime Measurements List
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-measure-list" rows="4" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                SHA-1 PCR Bank Register 0~23 Selection
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-compute-sha1-pcrlist" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                SHA-256 PCR Bank Register 0~23 Selection
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-compute-sha2-pcrlist" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                PCR Values (SHA1/SHA256 PCR bank)
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-pcrs-value" rows="2" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                Expected PCRs Digest
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-expected-pcr-digest" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Panel data -->
+                                </div>
+                                <!-- Card content -->
+                            </section>
+                            <!-- Section: Card -->
+                        </div>
+                        <!-- Card inside Card -->
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <!-- Card inside Card -->
+                        <div class="card card-cascade narrower">
+                            <!-- Section: Card -->
+                            <section>
+                                <h3 class="card-header card-h2 light-blue lighten-1 white-text text-uppercase font-weight-bold text-center py-3">Quote</h3>
+                                <!-- Card content -->
+                                <div class="card-body card-body-cascade pb-0">
+                                    <!-- Panel data -->
+                                    <div class="row card-body pt-3">
+                                        <div class="col-md-12">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                Raw Quote
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-quote" rows="2" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                AK Name
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-name" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                TPM Clock
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-clock" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                TPM Firmware Version
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-firmware" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                SHA-1 PCR Bank Register 0~23 Selection
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-sha1-pcrlist" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                SHA-256 PCR Bank Register 0~23 Selection
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-sha2-pcrlist" rows="1" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                Qualification Data
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-qualification" rows="2" readonly></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2 h6" style="text-align: left">
+                                                PCRs Digest
+                                            </p>
+                                            <div class="form-group">
+                                                <textarea class="form-control rounded-0" id="attest-pcr-digest" rows="2" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Panel data -->
+                                </div>
+                                <!-- Card content -->
+                            </section>
+                            <!-- Section: Card -->
+                        </div>
+                        <!-- Card inside Card -->
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <p class="mb-2 h6" style="text-align: left">
+                            Signature
+                        </p>
+                        <div class="form-group">
+                            <textarea class="form-control rounded-0" id="attest-signature" rows="4" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel data -->
+            </div>
+            <!-- Card content -->
+        </section>
+        <!-- Section: Card -->
+    </div>
+    <!-- Card -->
+</div>
+
+<br>
+
+<!-- Footer -->
+<footer class="page-footer font-small blue-grey lighten-5">
+
+    <div class="blue-grey lighten-4 dark-grey-text">
+        <div class="container">
+            <!-- Grid row-->
+            <div class="row py-4 d-flex align-items-center">
+
+                <!-- Grid column -->
+                <div class="col-md-6 col-lg-5 text-center text-md-left mb-4 mb-md-0">
+                    <h6 class="mb-0">Get connected with us on social networks!</h6>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-6 col-lg-7 text-center text-md-right">
+
+                    <!-- Facebook -->
+                    <a class="fb-ic" href="https://www.facebook.com/Infineon/">
+                        <i class="fab fa-facebook-f dark-grey-text mr-4"> </i>
+                    </a>
+                    <!-- Twitter -->
+                    <a class="tw-ic" href="https://twitter.com/Infineon/">
+                        <i class="fab fa-twitter dark-grey-text mr-4"> </i>
+                    </a>
+                    <!--Linkedin -->
+                    <a class="li-ic" href="https://sg.linkedin.com/company/infineon-technologies">
+                        <i class="fab fa-linkedin-in dark-grey-text mr-4"> </i>
+                    </a>
+
+                </div>
+                <!-- Grid column -->
+
+            </div>
+            <!-- Grid row-->
+        </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="container text-center text-md-left">
+
+        <!-- Grid row -->
+        <div class="row dark-grey-text">
+
+            <!-- Grid column -->
+            <div class="col-md-4 col-lg-3 mr-auto my-md-4 my-0 mt-4 mb-1">
+
+                <!-- Content -->
+                <h5 id="idDisclaimer" class="font-weight-bold text-uppercase mb-4">Disclaimer</h5>
+                <p>This is a Proof-of-Concept.</p>
+                <p>Any material downloaded or otherwise obtained through the uses of this website is done at your own discretion and risk and you are solely responsible for any damage may cause.</p>
+
+            </div>
+            <!-- Grid column -->
+
+            <hr class="clearfix w-100 d-md-none">
+
+            <!-- Grid column -->
+            <div class="col-md-2 col-lg-2 mx-auto my-md-4 my-0 mt-4 mb-1">
+
+                <!-- Links -->
+                <h5 class="font-weight-bold text-uppercase mb-4">About</h5>
+
+                <ul class="list-unstyled">
+                    <li>
+                        <p>
+                            <a class="dark-grey-text" href="https://www.infineon.com/">ABOUT US</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <a class="dark-grey-text" href="https://www.facebook.com/Infineon/">BLOG</a>
+                        </p>
+                    </li>
+                </ul>
+
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:<a href="https://www.infineon.com/"> Infineon.com</a></div>
+    <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+<!-- /Start your project here-->
+
+<!-- SCRIPTS -->
+<!-- jQuery -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="/webjars/mdbootstrap/js/mdb.min.js"></script>
+<!-- Websocket JavaScript -->
+<script type="text/javascript" src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script type="text/javascript" src="/webjars/stomp-websocket/stomp.min.js"></script>
+<!-- My js -->
+<script th:inline="javascript">
+    var caCerts = /*[[${caCerts}]]*/ null;
+    var attune = /*[[${attune}]]*/ null;
+    var atelic = /*[[${atelic}]]*/ null;
+</script>
+<script type="text/javascript" src="/static/js/util.js"></script>
+<script type="text/javascript" src="/static/js/core-dashboard.js"></script>
+</body>
+
+</html>
