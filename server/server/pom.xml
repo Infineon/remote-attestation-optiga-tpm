@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
-            <version>5.2.2.RELEASE</version>
+            <version>5.2.22.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
